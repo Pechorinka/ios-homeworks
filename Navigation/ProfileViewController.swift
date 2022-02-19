@@ -2,7 +2,7 @@
 //  ProfileViewController.swift
 //  Navigation
 //
-//  Created by Alexey Sidoryuk on 17.02.2022.
+//  Created by Tatyana Sidoryuk on 17.02.2022.
 //
 
 import UIKit

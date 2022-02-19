@@ -2,7 +2,7 @@
 //  TabBarController.swift
 //  Navigation
 //
-//  Created by Alexey Sidoryuk on 17.02.2022.
+//  Created by Tatyana Sidoryuk on 17.02.2022.
 //
 
 import UIKit
@@ -40,10 +40,11 @@ class TabBarController: UITabBarController {
     
     func setupTabBar() {
         let items: [TabBarItem] = [.feed, .profile]
+        
         self.viewControllers = items.map( { tabBarItem in
             switch tabBarItem {
                 case .feed:
-                    return UINavigationController(rootViewController: ViewController())
+                    return UINavigationController(rootViewController: FeedViewController())
                 case .profile:
                     return UINavigationController(rootViewController: ProfileViewController())
             }

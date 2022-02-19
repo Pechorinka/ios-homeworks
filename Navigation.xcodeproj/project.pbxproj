@@ -9,23 +9,27 @@
 /* Begin PBXBuildFile section */
 		91D2E4D327BED4190046DD69 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D2E4D227BED4190046DD69 /* AppDelegate.swift */; };
 		91D2E4D527BED4190046DD69 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D2E4D427BED4190046DD69 /* SceneDelegate.swift */; };
-		91D2E4D727BED4190046DD69 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D2E4D627BED4190046DD69 /* ViewController.swift */; };
+		91D2E4D727BED4190046DD69 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D2E4D627BED4190046DD69 /* FeedViewController.swift */; };
 		91D2E4DC27BED41C0046DD69 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91D2E4DB27BED41C0046DD69 /* Assets.xcassets */; };
 		91D2E4DF27BED41C0046DD69 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91D2E4DD27BED41C0046DD69 /* LaunchScreen.storyboard */; };
 		91D2E4E727BEDBFE0046DD69 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D2E4E627BEDBFE0046DD69 /* TabBarController.swift */; };
 		91D2E4E927BEE0D40046DD69 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D2E4E827BEE0D40046DD69 /* ProfileViewController.swift */; };
+		91D2E4EB27BEECDA0046DD69 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D2E4EA27BEECDA0046DD69 /* PostViewController.swift */; };
+		91D2E4ED27BEED060046DD69 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D2E4EC27BEED060046DD69 /* InfoViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		91D2E4CF27BED4190046DD69 /* Navigation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Navigation.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		91D2E4D227BED4190046DD69 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		91D2E4D427BED4190046DD69 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		91D2E4D627BED4190046DD69 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		91D2E4D627BED4190046DD69 /* FeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		91D2E4DB27BED41C0046DD69 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		91D2E4DE27BED41C0046DD69 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		91D2E4E027BED41C0046DD69 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		91D2E4E627BEDBFE0046DD69 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		91D2E4E827BEE0D40046DD69 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		91D2E4EA27BEECDA0046DD69 /* PostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
+		91D2E4EC27BEED060046DD69 /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,8 +65,10 @@
 				91D2E4D227BED4190046DD69 /* AppDelegate.swift */,
 				91D2E4D427BED4190046DD69 /* SceneDelegate.swift */,
 				91D2E4E627BEDBFE0046DD69 /* TabBarController.swift */,
-				91D2E4D627BED4190046DD69 /* ViewController.swift */,
+				91D2E4D627BED4190046DD69 /* FeedViewController.swift */,
 				91D2E4E827BEE0D40046DD69 /* ProfileViewController.swift */,
+				91D2E4EA27BEECDA0046DD69 /* PostViewController.swift */,
+				91D2E4EC27BEED060046DD69 /* InfoViewController.swift */,
 				91D2E4DB27BED41C0046DD69 /* Assets.xcassets */,
 				91D2E4DD27BED41C0046DD69 /* LaunchScreen.storyboard */,
 				91D2E4E027BED41C0046DD69 /* Info.plist */,
@@ -140,8 +146,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				91D2E4D727BED4190046DD69 /* ViewController.swift in Sources */,
+				91D2E4EB27BEECDA0046DD69 /* PostViewController.swift in Sources */,
+				91D2E4D727BED4190046DD69 /* FeedViewController.swift in Sources */,
 				91D2E4E727BEDBFE0046DD69 /* TabBarController.swift in Sources */,
+				91D2E4ED27BEED060046DD69 /* InfoViewController.swift in Sources */,
 				91D2E4E927BEE0D40046DD69 /* ProfileViewController.swift in Sources */,
 				91D2E4D327BED4190046DD69 /* AppDelegate.swift in Sources */,
 				91D2E4D527BED4190046DD69 /* SceneDelegate.swift in Sources */,
