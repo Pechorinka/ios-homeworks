@@ -20,7 +20,7 @@ class FeedViewController: UIViewController {
         self.view.backgroundColor = .systemMint
         self.navigationItem.title = "Лента"
         
-        let switchToPostButton = UIButton (frame: CGRect (x: 50, y: 250, width: 200, height: 50))
+        let switchToPostButton = UIButton (frame: CGRect (x: 50, y: 250, width: 200, height: 50))   
         switchToPostButton.backgroundColor = .black
         switchToPostButton.layer.cornerRadius = 12
         switchToPostButton.layer.masksToBounds = true
