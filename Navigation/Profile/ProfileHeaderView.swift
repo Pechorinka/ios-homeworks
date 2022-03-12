@@ -52,6 +52,8 @@ extension UITextField {
 
 final class ProfileHeaderView: UIView {
     
+
+    
     private var statusText: String = ""
     
     private lazy var labelsStackView: UIStackView = {  // new
@@ -101,11 +103,6 @@ final class ProfileHeaderView: UIView {
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         return button
     }()
-    
-//    @objc func buttonTapped(sender:UIButton)
-//    {
-//        secondLabel.text = statusText
-//    }
     
     private lazy var myLabel: UILabel = {
       let label = UILabel()
@@ -180,11 +177,15 @@ final class ProfileHeaderView: UIView {
         let trailingButtonConstraint = self.statusButton.trailingAnchor.constraint(equalTo: self.infoStackView.trailingAnchor)
         let heightButtonConstraint = self.statusButton.heightAnchor.constraint(equalToConstant: 50)
         
+        let topTextFieldConstraint = self.textField.topAnchor.constraint(equalTo: self.infoStackView.bottomAnchor, constant: 10)
+        let leadingTextFieldConstraint = self.textField.leadingAnchor.constraint(equalTo: self.secondLabel.leadingAnchor)
+        let trailingTextFieldConstraint = self.textField.trailingAnchor.constraint(equalTo: self.infoStackView.trailingAnchor)
+        
         NSLayoutConstraint.activate([
             topConstraint, leadingConstraint, trailingConstraint,
             imageViewAspectRatio,
             self.buttonTopConstraint, leadingButtonConstraint,
-            trailingButtonConstraint, heightButtonConstraint, imageLeftConstraint, imageTopConstraint, imageRightConstraint, myLabelTopConstraint
+            trailingButtonConstraint, heightButtonConstraint, imageLeftConstraint, imageTopConstraint, imageRightConstraint, myLabelTopConstraint, topTextFieldConstraint, leadingTextFieldConstraint, trailingTextFieldConstraint
         ].compactMap({ $0 }))
         
         image.layer.cornerRadius = self.image.frame.height / 2
