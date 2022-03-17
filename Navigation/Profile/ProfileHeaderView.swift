@@ -3,9 +3,10 @@
 //  Navigation
 //
 //  Created by Tatyana Sidoryuk on 20.02.2022.
-// ОНО
+
 
 import UIKit
+
 
 protocol ProfileHeaderViewProtocol: AnyObject {
     func didTapStatusButton(textFieldIsVisible: Bool, completion: @escaping () -> Void)
@@ -49,14 +50,27 @@ extension UITextField {
     }
 }
 
-
-final class ProfileHeaderView: UIView {
+final class ProfileHeaderView: UIView, PhotosTableViewCellProtocol {
     
-
+    func delegateButtonAction() {
+        }
     
     private var statusText: String = ""
+
+    lazy var photosTableViewCell: PhotosTableViewCell = {
+        let view2 = PhotosTableViewCell(frame: .zero)
+        view2.delegate = self
+        view2.translatesAutoresizingMaskIntoConstraints = false
+        return view2
+    } ()
     
-    private lazy var labelsStackView: UIStackView = {  // new
+    lazy var myCollection: UICollectionView = {
+        let view = UICollectionView(frame: .zero)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private lazy var labelsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
@@ -65,7 +79,7 @@ final class ProfileHeaderView: UIView {
         return stackView
     }()
     
-    private lazy var infoStackView: UIStackView = { // new
+    public lazy var infoStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 20
@@ -73,9 +87,7 @@ final class ProfileHeaderView: UIView {
         return stackView
     }()
     
-    private var buttonTopConstraint: NSLayoutConstraint? // new
-    
-    weak var delegate: ProfileHeaderViewProtocol? // new
+    var buttonTopConstraint: NSLayoutConstraint? // new
     
     private lazy var image: UIImageView = {
         let imageView  = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
@@ -88,7 +100,7 @@ final class ProfileHeaderView: UIView {
         return imageView
     }()
     
-    private lazy var statusButton: UIButton = {
+    public lazy var statusButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Show status", for: .normal)
@@ -157,6 +169,7 @@ final class ProfileHeaderView: UIView {
         self.addSubview(self.infoStackView)
         self.addSubview(self.statusButton)
         self.addSubview(self.textField)
+        
         self.infoStackView.addArrangedSubview(self.image)
         self.infoStackView.addArrangedSubview(self.labelsStackView)
         self.labelsStackView.addArrangedSubview(self.myLabel)
@@ -169,7 +182,7 @@ final class ProfileHeaderView: UIView {
         let imageViewAspectRatio = self.image.heightAnchor.constraint(equalTo: self.image.widthAnchor, multiplier: 1.0)
         let imageLeftConstraint = self.image.leadingAnchor.constraint(equalTo: self.infoStackView.leadingAnchor)
         let imageRightConstraint = self.image.trailingAnchor.constraint(equalTo: self.infoStackView.leadingAnchor, constant: 100)
-        let myLabelTopConstraint = self.myLabel.topAnchor.constraint(equalTo: self.labelsStackView.topAnchor, constant: 11)
+        let myLabelTopConstraint = self.myLabel.topAnchor.constraint(equalTo: self.labelsStackView.topAnchor, constant: 0)
         
         self.buttonTopConstraint = self.statusButton.topAnchor.constraint(equalTo: self.infoStackView.bottomAnchor, constant: 16)
         self.buttonTopConstraint?.priority = UILayoutPriority(rawValue: 999)
@@ -180,12 +193,13 @@ final class ProfileHeaderView: UIView {
         let topTextFieldConstraint = self.textField.topAnchor.constraint(equalTo: self.infoStackView.bottomAnchor, constant: 10)
         let leadingTextFieldConstraint = self.textField.leadingAnchor.constraint(equalTo: self.secondLabel.leadingAnchor)
         let trailingTextFieldConstraint = self.textField.trailingAnchor.constraint(equalTo: self.infoStackView.trailingAnchor)
+
         
         NSLayoutConstraint.activate([
             topConstraint, leadingConstraint, trailingConstraint,
             imageViewAspectRatio,
             self.buttonTopConstraint, leadingButtonConstraint,
-            trailingButtonConstraint, heightButtonConstraint, imageLeftConstraint, imageTopConstraint, imageRightConstraint, myLabelTopConstraint, topTextFieldConstraint, leadingTextFieldConstraint, trailingTextFieldConstraint
+            trailingButtonConstraint, heightButtonConstraint, imageLeftConstraint, imageTopConstraint, imageRightConstraint, myLabelTopConstraint, topTextFieldConstraint, leadingTextFieldConstraint, trailingTextFieldConstraint, 
         ].compactMap({ $0 }))
         
         image.layer.cornerRadius = self.image.frame.height / 2
@@ -196,7 +210,7 @@ final class ProfileHeaderView: UIView {
             self.addSubview(self.textField)
             textField.isHidden = false
             statusButton.setTitle("Set status", for: .normal)
-            self.buttonTopConstraint?.isActive = false // Необходимо деактивировать констрейнт, иначе будет конфликт констрейнтов, и Auto Layout не сможет однозначно определить фреймы textField'а.
+            self.buttonTopConstraint?.isActive = false
             let topConstraint = self.textField.topAnchor.constraint(equalTo: self.infoStackView.bottomAnchor, constant: 10)
             let leadingConstraint = self.textField.leadingAnchor.constraint(equalTo: self.secondLabel.leadingAnchor)
             let trailingConstraint = self.textField.trailingAnchor.constraint(equalTo: self.infoStackView.trailingAnchor)

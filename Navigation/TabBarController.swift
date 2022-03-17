@@ -8,8 +8,8 @@
 import UIKit
 
 class TabBarController: UITabBarController {
-
-    private enum TabBarItem {
+    
+        private enum TabBarItem {
         case feed
         case profile
         
@@ -37,7 +37,7 @@ class TabBarController: UITabBarController {
         super.viewDidLoad()
         self.setupTabBar()
     }
-    
+
     func setupTabBar() {
         let items: [TabBarItem] = [.feed, .profile]
         
