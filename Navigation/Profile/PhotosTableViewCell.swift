@@ -14,7 +14,7 @@ protocol PhotosTableViewCellProtocol: AnyObject {
 
 class PhotosTableViewCell: UITableViewCell {
     
-    weak var delegate: PhotosTableViewCellProtocol?
+weak var delegate: PhotosTableViewCellProtocol?
     
     private lazy var backView: UIView = {
         let view = UIView()
