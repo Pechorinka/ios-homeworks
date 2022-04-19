@@ -53,7 +53,7 @@ class TabBarController: UITabBarController {
                 case .feed:
                     return UINavigationController(rootViewController: FeedViewController())
                 case .profile:
-                    return UINavigationController(rootViewController: ProfileViewController())
+                    return UINavigationController(rootViewController: LoginViewController())
                 case .gest:
                     return UINavigationController(rootViewController: GesturesViewController())
             }
