@@ -46,8 +46,8 @@
             filePath = "Navigation/Profile/LoginViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "160"
-            endingLineNumber = "160"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
             landmarkName = "setupConstraints()"
             landmarkType = "7">
          </BreakpointContent>

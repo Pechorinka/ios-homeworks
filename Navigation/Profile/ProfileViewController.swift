@@ -18,6 +18,39 @@ class ViewController: UIViewController {
 
 final class ProfileViewController: UIViewController {
     
+    // серый фон для жестов
+    private lazy var mySecondView: UIView = {
+        let view = UIView()
+        view.isHidden = true
+        view.alpha = 0
+        view.backgroundColor = .systemGray
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    private lazy var myButton: UIButton = {
+        let button = UIButton()
+        let image = UIImage(systemName: "multiply.square")
+        button.setBackgroundImage(image, for: .normal)
+        button.isHidden = true
+        button.alpha = 0
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    public lazy var imageCopy: UIImageView = {
+        let imageView  = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        imageView.alpha = 0
+        imageView.backgroundColor = .white
+        imageView.clipsToBounds = true
+        imageView.layer.borderWidth = 3
+        imageView.layer.borderColor = UIColor.white.cgColor
+        imageView.image = UIImage(named: "cat.png")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private var isExpanded = false
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isHidden = true 
@@ -32,10 +65,10 @@ final class ProfileViewController: UIViewController {
     lazy var profileHeader: ProfileHeaderView = {
         let view = ProfileHeaderView(frame: .zero)
         view.translatesAutoresizingMaskIntoConstraints = false
+        
         return view
     } ()
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
@@ -53,7 +86,6 @@ final class ProfileViewController: UIViewController {
         view.endEditing(true)
     }
     
-    
     lazy var tableView: UITableView = {
          let tableView = UITableView()
          tableView.dataSource = self
@@ -67,8 +99,22 @@ final class ProfileViewController: UIViewController {
          return tableView
      } ()
     
+    private var crossWidthConstraint: NSLayoutConstraint?
+    private var crossHeightConstraint: NSLayoutConstraint?
+    private var crossTopConstraint: NSLayoutConstraint?
+    private var crossTrailingtConstraint: NSLayoutConstraint?
+    
+    private var imageCopyTopConstraint: NSLayoutConstraint?
+    private var imageCopyLeadingConstraint: NSLayoutConstraint?
+    private var imageCopyWidthConstraint: NSLayoutConstraint?
+    private var imageCopyHeightConstraint: NSLayoutConstraint?
+    private var imageCopyCenterYConstraint: NSLayoutConstraint?
+    private var imageCopyCenterXConstraint: NSLayoutConstraint?
+    
     override func viewWillLayoutSubviews() {
+        
         view.addSubview(self.profileHeader)
+        
         profileHeader.backgroundColor = .lightGray
         let topConstraint = self.profileHeader.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 40)
         let leadingConstraint = self.profileHeader.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0)
@@ -81,11 +127,101 @@ final class ProfileViewController: UIViewController {
         let trailingTableViewConstraint = self.tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
         let bottomTableViewConstraint = self.tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -80)
         
+        
+        view.addSubview(mySecondView)
+        // перекрывающий серый фон
+        let secondViewTopConstraint = self.mySecondView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 40)
+        let secondViewLeadingConstraint = self.mySecondView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor)
+        let secondViewTrailingConstraint = self.mySecondView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
+        let secondViewBottomConstraint = self.mySecondView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -80)
+        
+        view.addSubview(imageCopy)
+        
+        // крестик
+        view.addSubview(myButton)
+        let crossTopConstraint = self.myButton.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 40)
+        let crossTrailingtConstraint = self.myButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20)
+        let crossWidthConstraint = self.myButton.widthAnchor.constraint(equalToConstant: 40)
+        let crossHeightConstraint = self.myButton.heightAnchor.constraint(equalToConstant: 40)
+        
+        // копия фото
+
+        self.imageCopyWidthConstraint = self.imageCopy.widthAnchor.constraint(equalToConstant: 100)
+        self.imageCopyHeightConstraint = self.imageCopy.heightAnchor.constraint(equalToConstant: 100)
+        
+        
         NSLayoutConstraint.activate([topConstraint, leadingConstraint, trailingConstraint, bottomConstraint,
-                                     topTableViewConstraint, leadingTableViewConstraint, trailingTableViewConstraint, bottomTableViewConstraint
+                                     topTableViewConstraint, leadingTableViewConstraint, trailingTableViewConstraint, bottomTableViewConstraint,
+                                     secondViewTopConstraint, secondViewBottomConstraint, secondViewLeadingConstraint, secondViewTrailingConstraint,
+                                     crossTopConstraint, crossWidthConstraint, crossHeightConstraint, crossTrailingtConstraint,
         ])
+        
+        self.imageCopyWidthConstraint?.isActive = true
+        self.imageCopyHeightConstraint?.isActive = true
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapGesture))
+        profileHeader.addGestureRecognizer(tapGesture)
+        myButton.addTarget(self, action: #selector(self.didTapButton), for: .touchUpInside)
     }
     
+    @objc private func handleTapGesture() {
+        self.mySecondView.isHidden = false
+        self.myButton.isHidden = false
+        self.isExpanded.toggle()
+        profileHeader.image.alpha = 0
+        self.imageCopy.alpha = 1
+        
+        
+        self.imageCopyWidthConstraint = self.imageCopy.widthAnchor.constraint(equalTo: self.view.widthAnchor)
+        self.imageCopyHeightConstraint = self.imageCopy.heightAnchor.constraint(equalTo: self.view.widthAnchor)
+        self.imageCopyCenterXConstraint = self.imageCopy.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
+        self.imageCopyCenterYConstraint = self.imageCopy.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
+        
+        self.imageCopyWidthConstraint!.isActive = true
+        self.imageCopyHeightConstraint!.isActive = true
+        imageCopyCenterYConstraint!.isActive = true
+        imageCopyCenterXConstraint!.isActive = true
+        
+        
+        imageCopy.layer.cornerRadius = self.imageCopy.frame.height / 2
+        
+        UIView.animate(withDuration: 0.5) { [self] in
+            self.mySecondView.alpha = self.isExpanded ? 0.5 : 0
+            self.view.layoutIfNeeded()
+            
+        } completion: { _ in
+        }
+
+        UIView.animate(withDuration: 0.3, delay: 0.5) {
+            self.myButton.alpha = self.isExpanded ? 1 : 0
+            self.view.layoutIfNeeded()
+
+        } completion: { _ in
+        }
+    }
+    
+    @objc private func didTapButton() {
+        self.mySecondView.isHidden = false
+        self.myButton.isHidden = false
+        self.isExpanded.toggle()
+        profileHeader.image.alpha = 1
+        
+        imageCopy.alpha = 0
+        
+
+        UIView.animate(withDuration: 0.5) {
+            self.mySecondView.alpha = self.isExpanded ? 0.5 : 0
+
+        } completion: { _ in
+        }
+
+        UIView.animate(withDuration: 0.3, delay: 0.5) {
+            self.myButton.alpha = self.isExpanded ? 1 : 0
+
+        } completion: { _ in
+        }
+
+    }
     
     private func fetchPosts(completion: @escaping ([News.Post]) -> Void) {
         if let path = Bundle.main.path(forResource: "news", ofType: "json") {

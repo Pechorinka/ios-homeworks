@@ -9,6 +9,12 @@ import UIKit
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
  
+    var i = false // проверка первого филда на пустоту
+    var j = false // проверка второго филда на пустоту
+    
+    let email = "xxxxxxx" // стандартный мейл
+    let password = "xxxxxxx" // стандартный пароль
+    
     private lazy var scrollView: UIScrollView = {
             let scrollView = UIScrollView ()
             scrollView.backgroundColor = .white
@@ -50,9 +56,17 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         text1.clearButtonMode = .whileEditing
         text1.clearButtonMode = .unlessEditing
         text1.clearButtonMode = .always
+        text1.placeholder = "xxxxxxx"
         text1.addPadding(.both(10))
+        text1.addTarget(self, action: #selector(textFieldDidChange(_:)),
+                        for: UIControl.Event.editingChanged)
         return text1
     }()
+    
+    @objc func textFieldDidChange(_ textField: UITextField) {
+        i = false
+        textField.backgroundColor = .white
+    }
     
     private lazy var textField2: UITextField = {
        let text2 = UITextField()
@@ -67,8 +81,31 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         text2.translatesAutoresizingMaskIntoConstraints = false
         text2.isSecureTextEntry = true
         text2.addPadding(.both(10))
+        text2.placeholder = "xxxxxxx"
+        text2.addTarget(self, action: #selector(textFieldDidChange2(_:)),
+                        for: UIControl.Event.editingChanged)
         return text2
     }()
+    
+    private lazy var errorLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .darkGray
+        label.font = UIFont.systemFont(ofSize: 10)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Слишком короткий пароль"
+        label.isHidden = true
+        return label
+    } ()
+    
+    @objc func textFieldDidChange2(_ textField: UITextField) {
+        j = false
+        if textField2.text!.count < 5 {
+            errorLabel.isHidden = false
+        } else {
+            errorLabel.isHidden = true
+        }
+        textField.backgroundColor = .white
+    }
     
     private lazy var myButton: UIButton = {
         let image = UIImage(named: "blue_pixel.png")
@@ -106,8 +143,31 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             myButton.alpha = 1
         }
         
-        let profile = ProfileViewController()
-        self.navigationController?.pushViewController(profile, animated: true)
+        if textField1.text == "" {
+            textField1.backgroundColor = .red
+            i = true
+        }
+        if textField2.text == "" {
+            textField2.backgroundColor = .red
+            j = true
+        }
+        if textField2.text!.count < 5 && j == false {
+            j = true
+            errorLabel.isHidden = false
+        }
+        
+        if i == false && j == false {
+            if textField1.text == email && textField2.text == password {
+                let profile = ProfileViewController()
+                self.navigationController?.pushViewController(profile, animated: true)
+            } else {
+                let alert = UIAlertController (title: "Неверная комбинация логина и пароля", message: "", preferredStyle: .alert)
+                let okButton = UIAlertAction (title: "OK", style: .default, handler: {action in print ("OK")} )
+                alert.addAction(okButton)
+                present (alert, animated: true, completion: nil)
+            }
+        }
+     
     }
 
     override func viewDidLoad() {
@@ -153,6 +213,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         scrollView.addSubview(stackView)
         stackView.addArrangedSubview(textField1)
         stackView.addArrangedSubview(textField2)
+        stackView.addArrangedSubview(errorLabel)
         stackView.addArrangedSubview(myButton)
     }
     
@@ -178,10 +239,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         let text2TopConstraint = self.textField2.topAnchor.constraint(equalTo: self.textField1.bottomAnchor)
         let buttonHeightConstraint = self.myButton.heightAnchor.constraint(equalToConstant: 50)
         let text1TopConstraint = self.textField1.topAnchor.constraint(greaterThanOrEqualTo: vkImage.bottomAnchor)
+        
+        let errorLabelHeightConstraint = self.errorLabel.heightAnchor.constraint(equalToConstant: 20)
     
         
         NSLayoutConstraint.activate([scrollViewTopConstraint, scrollViewLeftConstraint, scrollViewRightConstraint, scrollViewBottomConstraint, vkImageTopConstraint, vkImageCenterXConstraint, vkImageHeightConstraint, vkImageWidthConstraint,
-            stackViewLeadingConstraint, stackViewTrailingConstraint, stackViewCenterXConstraint, stackViewCenterYConstraint, text1HeightConstraint, text2HeightConstraint, buttonHeightConstraint, text2TopConstraint, text1TopConstraint
+            stackViewLeadingConstraint, stackViewTrailingConstraint, stackViewCenterXConstraint, stackViewCenterYConstraint, text1HeightConstraint, text2HeightConstraint, buttonHeightConstraint, text2TopConstraint, text1TopConstraint, errorLabelHeightConstraint
                                     ])
 
     }

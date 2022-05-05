@@ -88,8 +88,10 @@ final class ProfileHeaderView: UIView, PhotosTableViewCellProtocol {
     }()
     
     var buttonTopConstraint: NSLayoutConstraint? // new
+    var imageLeftConstraint: NSLayoutConstraint?
+    var imageRightConstraint: NSLayoutConstraint?
     
-    private lazy var image: UIImageView = {
+    public lazy var image: UIImageView = {
         let imageView  = UIImageView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
         imageView.backgroundColor = .white
         imageView.clipsToBounds = true
@@ -97,6 +99,7 @@ final class ProfileHeaderView: UIView, PhotosTableViewCellProtocol {
         imageView.layer.borderColor = UIColor.white.cgColor
         imageView.image = UIImage(named: "cat.png")
         imageView.translatesAutoresizingMaskIntoConstraints = false
+ 
         return imageView
     }()
     
@@ -149,17 +152,79 @@ final class ProfileHeaderView: UIView, PhotosTableViewCellProtocol {
         return text
     }()
     
+    // Жесты
+    
+    private lazy var mySecondView: UIView = {
+        let view = UIView()
+        view.isHidden = true
+        view.alpha = 0
+        view.backgroundColor = .systemGray
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private lazy var myButton: UIButton = {
+        let button = UIButton()
+        let image = UIImage(systemName: "multiply.square")
+        button.setBackgroundImage(image, for: .normal)
+        button.isHidden = true
+        button.alpha = 0
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private let tapGestureRecognizer = UITapGestureRecognizer()
+    public var topImageConstraint: NSLayoutConstraint?
+    public var leftImageConstraint: NSLayoutConstraint?
+    public var widthImageConstraint: NSLayoutConstraint?
+    public var heightImageConstraint: NSLayoutConstraint?
+    private var isExpanded = false
+    
+     
+    // жесты - конец
     
       @objc func statusTextChanged(_ textField: UITextField)
       {
           statusText = textField.text!
+          if statusText.count == 0 {
+              textField.backgroundColor = .red
+          } else {
+              textField.backgroundColor = .white
+          }
       }
     
     override init (frame: CGRect) {
         super.init(frame: frame)
         self.drawSelf()
     }
-     
+    
+
+
+    @objc private func didTapButton() {
+        self.mySecondView.isHidden = false
+        self.bringSubviewToFront(mySecondView)
+        self.myButton.isHidden = false
+        self.isExpanded.toggle()
+        self.heightImageConstraint?.constant = self.isExpanded ? self.bounds.height : 140
+        self.widthImageConstraint?.constant = self.isExpanded ? self.bounds.width : 140
+        NSLayoutConstraint.activate([ self.topImageConstraint, self.leftImageConstraint
+        ].compactMap( {$0} ))
+        UIView.animate(withDuration: 0.5) {
+            self.mySecondView.alpha = self.isExpanded ? 0.5 : 0
+            self.layoutIfNeeded()
+
+        } completion: { _ in
+        }
+
+        UIView.animate(withDuration: 0.3, delay: 0.5) {
+            self.myButton.alpha = self.isExpanded ? 1 : 0
+            self.layoutIfNeeded()
+
+        } completion: { _ in
+        }
+
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -169,19 +234,22 @@ final class ProfileHeaderView: UIView, PhotosTableViewCellProtocol {
         self.addSubview(self.infoStackView)
         self.addSubview(self.statusButton)
         self.addSubview(self.textField)
+        self.addSubview(self.mySecondView) //  серый фон
+        self.addSubview(self.myButton) // кнопка с крестиком
         
         self.infoStackView.addArrangedSubview(self.image)
         self.infoStackView.addArrangedSubview(self.labelsStackView)
         self.labelsStackView.addArrangedSubview(self.myLabel)
         self.labelsStackView.addArrangedSubview(self.secondLabel)
+        
 
         let topConstraint = self.infoStackView.topAnchor.constraint(equalTo: self.topAnchor)
         let leadingConstraint = self.infoStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20)
         let trailingConstraint = self.infoStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20)
         let imageTopConstraint = self.image.topAnchor.constraint(equalTo: self.infoStackView.topAnchor, constant: 16)
         let imageViewAspectRatio = self.image.heightAnchor.constraint(equalTo: self.image.widthAnchor, multiplier: 1.0)
-        let imageLeftConstraint = self.image.leadingAnchor.constraint(equalTo: self.infoStackView.leadingAnchor)
-        let imageRightConstraint = self.image.trailingAnchor.constraint(equalTo: self.infoStackView.leadingAnchor, constant: 100)
+        self.imageLeftConstraint = self.image.leadingAnchor.constraint(equalTo: self.infoStackView.leadingAnchor)
+        self.imageRightConstraint = self.image.trailingAnchor.constraint(equalTo: self.infoStackView.leadingAnchor, constant: 100)
         let myLabelTopConstraint = self.myLabel.topAnchor.constraint(equalTo: self.labelsStackView.topAnchor, constant: 0)
         
         self.buttonTopConstraint = self.statusButton.topAnchor.constraint(equalTo: self.infoStackView.bottomAnchor, constant: 16)
@@ -199,7 +267,7 @@ final class ProfileHeaderView: UIView, PhotosTableViewCellProtocol {
             topConstraint, leadingConstraint, trailingConstraint,
             imageViewAspectRatio,
             self.buttonTopConstraint, leadingButtonConstraint,
-            trailingButtonConstraint, heightButtonConstraint, imageLeftConstraint, imageTopConstraint, imageRightConstraint, myLabelTopConstraint, topTextFieldConstraint, leadingTextFieldConstraint, trailingTextFieldConstraint, 
+            trailingButtonConstraint, heightButtonConstraint, imageLeftConstraint, imageTopConstraint, imageRightConstraint, myLabelTopConstraint, topTextFieldConstraint, leadingTextFieldConstraint, trailingTextFieldConstraint,
         ].compactMap({ $0 }))
         
         image.layer.cornerRadius = self.image.frame.height / 2
@@ -228,16 +296,34 @@ final class ProfileHeaderView: UIView, PhotosTableViewCellProtocol {
             )
             
         } else {
-            secondLabel.text = statusText
-            textField.isHidden = true
-            self.textField.endEditing(true)
-            self.buttonTopConstraint =  self.statusButton.topAnchor.constraint(equalTo: self.infoStackView.bottomAnchor, constant: 16)
-            buttonTopConstraint?.isActive = true
-            statusButton.setTitle("Show status", for: .normal)
-            UIView.animate(withDuration: 1 / 2, delay: 0, options: .curveLinear, animations: {
-                self.layoutIfNeeded()
-            }, completion: nil
-            )
+            if statusText == "" {
+                textField.backgroundColor = .red
+            }
+            else {
+                secondLabel.text = statusText
+                textField.isHidden = true
+                self.textField.endEditing(true)
+                self.buttonTopConstraint =  self.statusButton.topAnchor.constraint(equalTo: self.infoStackView.bottomAnchor, constant: 16)
+                buttonTopConstraint?.isActive = true
+                statusButton.setTitle("Show status", for: .normal)
+                UIView.animate(withDuration: 1 / 2, delay: 0, options: .curveLinear, animations: {
+                    self.layoutIfNeeded()
+                }, completion: nil
+                )
+            }
+        }
+        
+    }
+}
+
+extension UIView {
+    func findViewController() -> UIViewController? {
+        if let nextResponder = self.next as? UIViewController {
+            return nextResponder
+        } else if let nextResponder = self.next as? UIView {
+            return nextResponder.findViewController()
+        } else {
+            return nil
         }
     }
 }
