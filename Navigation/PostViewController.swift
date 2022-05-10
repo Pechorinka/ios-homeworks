@@ -11,7 +11,7 @@ class PostViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .systemYellow
+        self.view.backgroundColor = .white
         
         self.navigationItem.rightBarButtonItems = [
                     UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareBtnTapped)),
@@ -21,7 +21,6 @@ class PostViewController: UIViewController {
     }
     @objc private func shareBtnTapped() {
           let newVC = InfoViewController()
-      //    newVC.modalPresentationStyle = .fullScreen
           self.present(newVC, animated: true, completion: nil)
     }
 }

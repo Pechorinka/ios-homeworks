@@ -56,7 +56,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         text1.clearButtonMode = .whileEditing
         text1.clearButtonMode = .unlessEditing
         text1.clearButtonMode = .always
-        text1.placeholder = "xxxxxxx"
+        text1.placeholder = "E-mail"
         text1.addPadding(.both(10))
         text1.addTarget(self, action: #selector(textFieldDidChange(_:)),
                         for: UIControl.Event.editingChanged)
@@ -81,7 +81,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         text2.translatesAutoresizingMaskIntoConstraints = false
         text2.isSecureTextEntry = true
         text2.addPadding(.both(10))
-        text2.placeholder = "xxxxxxx"
+        text2.placeholder = "Password"
         text2.addTarget(self, action: #selector(textFieldDidChange2(_:)),
                         for: UIControl.Event.editingChanged)
         return text2

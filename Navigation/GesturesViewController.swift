@@ -5,7 +5,7 @@
 //  Created by Tatyana Sidoryuk on 22.03.2022.
 //
 
-import UIKit
+/*import UIKit
 
 final class GesturesViewController: UIViewController {
     
@@ -209,3 +209,4 @@ final class GesturesViewController: UIViewController {
         }
     }
 }
+*/

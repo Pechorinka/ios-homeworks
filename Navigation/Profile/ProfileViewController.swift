@@ -16,6 +16,11 @@ class ViewController: UIViewController {
      }
 }
 
+var likedPosts = Set<Int>()
+public var thisViews = 0
+
+public var postNumber = 0
+
 final class ProfileViewController: UIViewController {
     
     // серый фон для жестов
@@ -53,7 +58,7 @@ final class ProfileViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.isHidden = true 
+        self.navigationController?.navigationBar.isHidden = true
     }
     
     private lazy var jsonDecoder: JSONDecoder = {
@@ -291,6 +296,7 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
                 return cell
             }
 
+            cell.delegate = self
             cell.layer.shouldRasterize = true
             cell.layer.rasterizationScale = UIScreen.main.scale
 
@@ -304,6 +310,7 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
             return cell
         }
 
+            cell.delegate = self
         let post = self.dataSource[indexPath.row - 1]
         let viewModel = PostTableViewCell.ViewModel(author: post.author,
                                                     description: post.description, image: post.image, likes: post.likes, views: post.views)
@@ -313,3 +320,36 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
     }
      
 }
+
+extension ProfileViewController: PostTableViewCellProtocol {
+    func tapLikes(cell: PostTableViewCell) {
+        guard let index = self.tableView.indexPath(for: cell)?.row else { return }
+        if likedPosts.contains(index) {
+            likedPosts.remove(index)
+            let indexPath = IndexPath(row: index, section: 0)
+            self.dataSource[indexPath.row - 1].likes -= 1
+            self.tableView.reloadData()
+            
+        } else {
+            likedPosts.insert(index)
+            let indexPath = IndexPath(row: index, section: 0)
+            self.dataSource[indexPath.row - 1].likes += 1
+            self.tableView.reloadData()
+        }
+    }
+    
+    func tapPostImage(cell: PostTableViewCell) {
+        
+         guard let index = self.tableView.indexPath(for: cell)?.row else { return }
+         postNumber = index
+         let indexPath = IndexPath(row: index, section: 0)
+         self.dataSource[indexPath.row - 1].views += 1
+         thisViews = self.dataSource[indexPath.row - 1].views
+         self.tableView.reloadData()
+        
+        let post = SinglePostViewController()
+        self.navigationController?.navigationBar.isHidden = false
+        self.navigationController?.pushViewController(post, animated: true)
+    }
+}
+

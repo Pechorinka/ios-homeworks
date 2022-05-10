@@ -9,7 +9,17 @@ import Foundation
 
 import UIKit
 
+protocol PostTableViewCellProtocol: AnyObject {
+    func tapLikes (cell: PostTableViewCell)
+    func tapPostImage (cell: PostTableViewCell)
+}
+
 class PostTableViewCell: UITableViewCell {
+    
+    weak var delegate: PostTableViewCellProtocol?
+    
+    private var tapLikesGesture = UITapGestureRecognizer()
+    private var tapPostsGesture = UITapGestureRecognizer()
     
     struct ViewModel: ViewModelProtocol {
         var author: String
@@ -97,6 +107,7 @@ class PostTableViewCell: UITableViewCell {
     override init (style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.setupView()
+        self.setupGesture()
     }
     
     required init?(coder: NSCoder) {
@@ -167,5 +178,25 @@ extension PostTableViewCell: Setupable {
         self.label2.text = viewModel.description
         self.likes.text = "Likes: " + String (viewModel.likes)
         self.views.text = "Views: " + String (viewModel.views)
+    }
+}
+
+extension PostTableViewCell {
+    private func setupGesture() {
+        self.tapLikesGesture.addTarget(self, action: #selector(self.likesHandleTapGesture(_:)))
+        self.likes.addGestureRecognizer(self.tapLikesGesture)
+        self.likes.isUserInteractionEnabled = true
+        
+        self.tapPostsGesture.addTarget(self, action: #selector(self.postsImageTapGesture(_:)))
+        self.myImageView.addGestureRecognizer(self.tapPostsGesture)
+        self.myImageView.isUserInteractionEnabled = true
+    }
+    @objc func likesHandleTapGesture(_ gestureRecognizer: UITapGestureRecognizer) {
+        guard self.tapLikesGesture === gestureRecognizer else { return }
+        delegate?.tapLikes(cell: self)
+    }
+    @objc func postsImageTapGesture(_ gestureRecognizer: UITapGestureRecognizer) {
+        guard self.tapPostsGesture === gestureRecognizer else { return }
+        delegate?.tapPostImage(cell: self)
     }
 }

@@ -53,6 +53,7 @@ extension UITextField {
 final class ProfileHeaderView: UIView, PhotosTableViewCellProtocol {
     
     func delegateButtonAction() {
+        print ("Clicked on arrow")
         }
     
     private var statusText: String = ""
@@ -106,7 +107,7 @@ final class ProfileHeaderView: UIView, PhotosTableViewCellProtocol {
     public lazy var statusButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Show status", for: .normal)
+        button.setTitle("Set status", for: .normal)
         button.titleLabel?.textColor = .white
         button.backgroundColor = UIColor.systemBlue
         button.layer.cornerRadius = 4
@@ -148,7 +149,6 @@ final class ProfileHeaderView: UIView, PhotosTableViewCellProtocol {
         text.text = secondLabel.text
         text.addTarget(self, action: #selector(statusTextChanged), for: .editingChanged)
         text.addPadding(.both(10))
-        text.isHidden = true
         return text
     }()
     
@@ -233,15 +233,16 @@ final class ProfileHeaderView: UIView, PhotosTableViewCellProtocol {
         
         self.addSubview(self.infoStackView)
         self.addSubview(self.statusButton)
-        self.addSubview(self.textField)
+     //   self.addSubview(self.textField)
         self.addSubview(self.mySecondView) //  серый фон
         self.addSubview(self.myButton) // кнопка с крестиком
         
         self.infoStackView.addArrangedSubview(self.image)
         self.infoStackView.addArrangedSubview(self.labelsStackView)
+        
         self.labelsStackView.addArrangedSubview(self.myLabel)
         self.labelsStackView.addArrangedSubview(self.secondLabel)
-        
+        self.labelsStackView.addArrangedSubview(self.textField)
 
         let topConstraint = self.infoStackView.topAnchor.constraint(equalTo: self.topAnchor)
         let leadingConstraint = self.infoStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20)
@@ -256,9 +257,9 @@ final class ProfileHeaderView: UIView, PhotosTableViewCellProtocol {
         self.buttonTopConstraint?.priority = UILayoutPriority(rawValue: 999)
         let leadingButtonConstraint = self.statusButton.leadingAnchor.constraint(equalTo: self.infoStackView.leadingAnchor)
         let trailingButtonConstraint = self.statusButton.trailingAnchor.constraint(equalTo: self.infoStackView.trailingAnchor)
-        let heightButtonConstraint = self.statusButton.heightAnchor.constraint(equalToConstant: 50)
+        let heightButtonConstraint = self.statusButton.heightAnchor.constraint(equalToConstant: 40)
         
-        let topTextFieldConstraint = self.textField.topAnchor.constraint(equalTo: self.infoStackView.bottomAnchor, constant: 10)
+        let topTextFieldConstraint = self.textField.topAnchor.constraint(equalTo: self.secondLabel.bottomAnchor, constant: 20)
         let leadingTextFieldConstraint = self.textField.leadingAnchor.constraint(equalTo: self.secondLabel.leadingAnchor)
         let trailingTextFieldConstraint = self.textField.trailingAnchor.constraint(equalTo: self.infoStackView.trailingAnchor)
 
@@ -274,45 +275,14 @@ final class ProfileHeaderView: UIView, PhotosTableViewCellProtocol {
     }
     
     @objc private func buttonTapped() {
-        if self.textField.isHidden {
-            self.addSubview(self.textField)
-            textField.isHidden = false
-            statusButton.setTitle("Set status", for: .normal)
-            self.buttonTopConstraint?.isActive = false
-            let topConstraint = self.textField.topAnchor.constraint(equalTo: self.infoStackView.bottomAnchor, constant: 10)
-            let leadingConstraint = self.textField.leadingAnchor.constraint(equalTo: self.secondLabel.leadingAnchor)
-            let trailingConstraint = self.textField.trailingAnchor.constraint(equalTo: self.infoStackView.trailingAnchor)
-            let heightTextFieldConstraint = self.textField.heightAnchor.constraint(equalToConstant: 34)
-   
-            NSLayoutConstraint.activate([
-                topConstraint, leadingConstraint, trailingConstraint, heightTextFieldConstraint
-            ].compactMap({ $0 }))
-            
-            self.statusButton.topAnchor.constraint(equalTo: self.textField.bottomAnchor, constant: 20).isActive = true
-            
-            UIView.animate(withDuration: 1 / 2, delay: 0, options: .curveLinear, animations: {
-                self.layoutIfNeeded()
-            }, completion: nil
-            )
-            
-        } else {
             if statusText == "" {
                 textField.backgroundColor = .red
             }
             else {
                 secondLabel.text = statusText
-                textField.isHidden = true
                 self.textField.endEditing(true)
-                self.buttonTopConstraint =  self.statusButton.topAnchor.constraint(equalTo: self.infoStackView.bottomAnchor, constant: 16)
-                buttonTopConstraint?.isActive = true
-                statusButton.setTitle("Show status", for: .normal)
-                UIView.animate(withDuration: 1 / 2, delay: 0, options: .curveLinear, animations: {
-                    self.layoutIfNeeded()
-                }, completion: nil
-                )
+                statusButton.setTitle("Set status", for: .normal)
             }
-        }
-        
     }
 }
 

@@ -8,7 +8,18 @@
 import UIKit
 
 class PhotosViewController: UIViewController {
+    
+    var largeImage = UIImage()
 
+    // серый фон для жестов
+    private lazy var grayView: UIView = {
+        let view = UIView()
+        view.alpha = 0
+        view.backgroundColor = .systemGray
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private lazy var photoCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -27,9 +38,32 @@ class PhotosViewController: UIViewController {
         return layout
     }()
     
+    public lazy var largeCopy: UIImageView = {
+        let imageView  = UIImageView()
+        imageView.backgroundColor = .white
+        imageView.clipsToBounds = true
+        imageView.layer.borderWidth = 3
+        imageView.layer.borderColor = UIColor.white.cgColor
+        imageView.image = largeImage
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCollectionView()
+    }
+    
+    @objc private func pressedButton() {
+        UIView.animate(withDuration: 0.5) {
+            self.grayView.alpha = 0
+        } completion: { _ in
+        }
+        UIView.animate(withDuration: 0.5) {
+            self.navigationItem.rightBarButtonItems = nil
+        } completion: { _ in
+        }
+        largeCopy.removeFromSuperview()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -80,6 +114,48 @@ extension PhotosViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        largeImage = UIImage(named: catsImages[indexPath.row])!
+        
+        view.addSubview(grayView)
+
+        // перекрывающий серый фон
+        let secondViewTopConstraint = self.grayView.topAnchor.constraint(equalTo: self.view.topAnchor)
+        let secondViewLeadingConstraint = self.grayView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor)
+        let secondViewTrailingConstraint = self.grayView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
+        let secondViewBottomConstraint = self.grayView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+   
+        NSLayoutConstraint.activate([
+                                     secondViewTopConstraint, secondViewBottomConstraint, secondViewLeadingConstraint, secondViewTrailingConstraint
+        ])
+        view.bringSubviewToFront(grayView)
+
+        UIView.animate(withDuration: 0.5) {
+            self.grayView.alpha = 0.7
+        } completion: { _ in
+        }
+        UIView.animate(withDuration: 0.3, delay: 0.5) {
+            self.navigationItem.rightBarButtonItems = [
+                UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(self.pressedButton))
+                    ]
+        } completion: { _ in
+        }
+        
+
+        largeCopy.image = largeImage
+        largeCopy.reloadInputViews()
+        view.addSubview(largeCopy)
+        let largeCopyWidthConstraint = self.largeCopy.widthAnchor.constraint(equalTo: self.view.widthAnchor)
+        let largeCopyHeightConstraint = self.largeCopy.heightAnchor.constraint(equalTo: self.view.widthAnchor)
+        let largeCopyXConstraint = self.largeCopy.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
+        let largeCopyYConstraint = self.largeCopy.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
+        NSLayoutConstraint.activate([ largeCopyXConstraint, largeCopyYConstraint, largeCopyWidthConstraint, largeCopyHeightConstraint
+        ])
+        view.bringSubviewToFront(largeCopy)
+    }
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
            return 1
        }
